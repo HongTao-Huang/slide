@@ -3,19 +3,29 @@ var imgLength = $allImgs.length;
 var n =0;
 slideInit($allImgs.eq(n));
 
-setInterval(()=>{
-    makeLeave($allImgs.eq(n)).one('transitionend',(e)=>{
-        makeEnter($(e.currentTarget));
-    });
-    makeCurrent($allImgs.eq((n+1)%imgLength));
-    n += 1;
-    n %= imgLength;
-},1500)
+var timerId = slide();
+document.addEventListener('visibilitychange',function(e){
+    if(document.hidden){
+        clearInterval(timerId);
+    }
+    else{
+        timerId = slide();
+    }
+})
 
 
 
 
-
+function slide(){
+    return setInterval(()=>{
+        makeLeave($allImgs.eq(n)).one('transitionend',(e)=>{
+            makeEnter($(e.currentTarget));
+        });
+        makeCurrent($allImgs.eq((n+1)%imgLength));
+        n += 1;
+        n %= imgLength;
+    },1500)
+}
 
 function slideInit($node){
     $node.addClass('current').siblings().addClass('enter');
